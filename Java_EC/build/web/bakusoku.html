@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>爆速JSONP</title>
+    </head>
+    <body>
+
+        <script src="https://s.yimg.jp/images/yjdn/js/bakusoku-jsonp-v1-min.js"
+                data-url="http://shopping.yahooapis.jp/ShoppingWebService/V1/json/itemSearch"
+                data-p-appid="dj00aiZpPTdqNWM0Szk0dk5DTCZzPWNvbnN1bWVyc2VjcmV0Jng9YTk-"
+                data-p-query="時計">
+<ol>
+{{#ResultSet.0.Result}}
+{{#0}}
+<li><a href="{{Url}}"><img src="{{Image.Medium}}"><br>{{Name}}</a></li>
+{{/0}}
+      {{#1}}
+<li><a href="{{Url}}"><img src="{{Image.Medium}}"><br>{{Name}}</a></li>
+        {{/1}}
+      {{#2}}
+        <li><a href="{{Url}}"><img src="{{Image.Medium}}"><br>{{Name}}</a></li>
+  {{/2}}
+      {{/ResultSet.0.Result}}
+  </ol>
+</script>
+    </body>
+</html>
