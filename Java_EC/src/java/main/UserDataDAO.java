@@ -75,7 +75,7 @@ public class UserDataDAO {
      * @throws SQLException 呼び出し元にcatchさせるためにスロー
      * @return 検索結果
      */
-    public UserDataDTO search(UserDataDTO ud) throws SQLException {
+    public UserDataDTO search(UserData ud,UserDataDTO dto) throws SQLException,Exception {
         Connection con = null;
         PreparedStatement st = null;
         try {
@@ -91,14 +91,14 @@ public class UserDataDAO {
 
             if (rs.next()) {
                 System.out.println("search completed");
-                ud.setUserID(rs.getInt(1));
-                ud.setName(rs.getString(2));
-                ud.setPassword(rs.getString(3));
-                ud.setMail(rs.getString(4));
-                ud.setAddress(rs.getString(5));
-                ud.setTotal(rs.getInt(6));
-                ud.setNewDate(rs.getTimestamp(7));
-                ud.setDeleteFlg(rs.getInt(8));
+                dto.setUserID(rs.getInt(1));
+                dto.setName(rs.getString(2));
+                dto.setPassword(rs.getString(3));
+                dto.setMail(rs.getString(4));
+                dto.setAddress(rs.getString(5));
+                dto.setTotal(rs.getInt(6));
+                dto.setNewDate(rs.getTimestamp(7));
+                dto.setDeleteFlg(rs.getInt(8));
             } else {
                 System.out.println("search completed");
                 throw new Exception();
@@ -108,59 +108,62 @@ public class UserDataDAO {
             System.out.println(e.getMessage());
             throw new SQLException(e);
         } catch (Exception ex) {
-            Logger.getLogger(UserDataDAO.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
+            throw new Exception(ex);
         } finally {
             if (con != null) {
                 con.close();
             }
         }
 
-        return ud;
+        return dto;
 
     }
 
-    /**
-     * ユーザーIDによる1件のデータの検索処理を行う。
-     *
-     * @param ud 対応したデータを保持しているJavaBeans
-     * @throws SQLException 呼び出し元にcatchさせるためにスロー
-     * @return 検索結果
-     */
-//    public UserDataDTO searchByID(UserDataDTO ud) throws SQLException {
-//        Connection con = null;
-//        PreparedStatement st = null;
-//        try {
-//            con = DBManager.getConnection();
-//
-//            String sql = "SELECT * FROM user_t WHERE userID = ?";
-//
-//            st = con.prepareStatement(sql);
-//            st.setInt(1, ud.getUserID());
-//
-//            ResultSet rs = st.executeQuery();
-//            rs.next();
-//            UserDataDTO resultUd = new UserDataDTO();
-//            resultUd.setUserID(rs.getInt(1));
-//            resultUd.setName(rs.getString(2));
-//            resultUd.setBirthday(rs.getDate(3));
-//            resultUd.setTell(rs.getString(4));
-//            resultUd.setType(rs.getInt(5));
-//            resultUd.setComment(rs.getString(6));
-//            resultUd.setNewDate(rs.getTimestamp(7));
-//
-//            System.out.println("searchByID completed");
-//
-//            return resultUd;
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//            throw new SQLException(e);
-//        } finally {
-//            if (con != null) {
-//                con.close();
-//            }
-//        }
-//
-//    }
+    public UserDataDTO search(UserDataDTO dto) throws SQLException,Exception {
+        Connection con = null;
+        PreparedStatement st = null;
+        try {
+            con = DBManager.getConnection();
+
+            //
+            String sql = "SELECT * FROM user_t WHERE userID = ?";
+            st = con.prepareStatement(sql);
+            st.setInt(1, dto.getUserID());
+
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("search completed");
+                dto.setUserID(rs.getInt(1));
+                dto.setName(rs.getString(2));
+                dto.setPassword(rs.getString(3));
+                dto.setMail(rs.getString(4));
+                dto.setAddress(rs.getString(5));
+                dto.setTotal(rs.getInt(6));
+                dto.setNewDate(rs.getTimestamp(7));
+                dto.setDeleteFlg(rs.getInt(8));
+            } else {
+                System.out.println("search completed");
+                throw new Exception();
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new SQLException(e);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new Exception(ex);
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+
+        return dto;
+
+    }
+
     /**
      * データの更新処理を行う。現在時刻は挿入直前に生成
      *
@@ -172,13 +175,14 @@ public class UserDataDAO {
         PreparedStatement st = null;
         try {
             con = DBManager.getConnection();
-            st = con.prepareStatement("UPDATE user_t SET name = ?, password = ?, mail = ?, address = ?, newDate = ? WHERE userID = ?");
+            st = con.prepareStatement("UPDATE user_t SET name = ?, password = ?, mail = ?, address = ?, total = ?, newDate = ? WHERE userID = ?");
             st.setString(1, ud.getName());
             st.setString(2, ud.getPassword());
             st.setString(3, ud.getMail());
             st.setString(4, ud.getAddress());
-            st.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-            st.setInt(6, ud.getUserID());
+            st.setInt(5, ud.getTotal());
+            st.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+            st.setInt(7, ud.getUserID());
             st.executeUpdate();
             System.out.println("update completed");
         } catch (SQLException e) {
@@ -282,11 +286,6 @@ public class UserDataDAO {
                 return null;
             }
             
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new SQLException(e);
-        } catch (Exception ex) {
-            Logger.getLogger(UserDataDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (con != null) {
                 con.close();

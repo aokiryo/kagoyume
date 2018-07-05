@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,29 +38,42 @@ public class myhistory extends HttpServlet {
             throws ServletException, IOException {
         //セッションスタート
         HttpSession s = request.getSession();
-        
-        UserDataDTO dto = (UserDataDTO)s.getAttribute("login");
-        
+
+        //ユーザー情報
+        UserDataDTO dto = (UserDataDTO) s.getAttribute("login");
+
         UserDataDAO dao = UserDataDAO.getInstance();
-        
+
+        //表示する商品情報用
         ArrayList<ItemData> history = new ArrayList<ItemData>();
-        
+
+        //例外発生時の判別用
+        int eflag = 0;
+
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            
+
+        try {
+
             //リクエストパラメータの文字コードをUTF-8に変更
             request.setCharacterEncoding("UTF-8");
-            
+
             //ログインしていなければ弾く
-            if(s.getAttribute("login") == null){
+            if (s.getAttribute("login") == null) {
                 throw new Exception();
             }
-            
+
+            //buyテーブルから購入済み商品の情報取得
             ArrayList<String> results = dao.searchBuyItems(dto.getUserID());
             
             if(results == null){
+                eflag = 1;
+                throw new Exception();
+            }
+
+            if (results == null) {
                 s.setAttribute("history", null);
-            }else{
+            } else {
                 for (int i = 0; i < results.size(); i++) {
                     ItemData item = new ItemData();
                     JsonNode jn = dao.searchCodes(results.get(i));
@@ -72,13 +86,23 @@ public class myhistory extends HttpServlet {
                 }
                 s.setAttribute("history", history);
             }
-            
+
             request.getRequestDispatcher("./Myhistory.jsp").forward(request, response);
-            
-        } catch (Exception ex) {
-            Logger.getLogger(mydata.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (SQLException ex) {
+            request.setAttribute("error", "データベースとの接続エラーです。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
+        }catch (Exception ex) {
+            if (eflag == 0) {
+                request.setAttribute("error", "不正なアクセスです。TOPページから改めてログイン、もしくはユーザー登録してください。");
+            }else if(eflag == 1){
+                request.setAttribute("error", "購入履歴がありません。");
         }
-            
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

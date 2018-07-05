@@ -3,11 +3,8 @@
     Created on : 2018/05/28, 16:55:08
     Author     : ryo
 --%>
-<%
-    HttpSession s = request.getSession();
-%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,7 +13,7 @@
     </head>
     <body>
         購入が完了しました。<br>
-        <a href="./Top.jsp">トップ（検索）</a><br>
+        <a href="./Top.jsp">トップ(検索)</a><br>
         <%--ログイン共通部--%>
         <a href="login">ログアウト</a><br>
     </body>

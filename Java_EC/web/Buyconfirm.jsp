@@ -7,13 +7,12 @@
 <%@page import="main.ItemData"%>
 <%
     HttpSession s = request.getSession();
-    ItemData id = (ItemData) s.getAttribute("id");
     ArrayList<ItemData> ids = (ArrayList<ItemData>) s.getAttribute("ids");
     int sum = 0;
 
 %>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -45,7 +44,7 @@
             <input type="submit" name="btnSubmit" value="カートに戻る"><br>
         </form><br>
 
-        <a href="./Top.jsp">トップ（検索）</a><br>
+        <a href="./Top.jsp">トップ(検索)</a><br>
         <%--ログイン共通部--%>
         <%if (s.getAttribute("login") != null) {%>
         <a href="login">ログアウト</a><br>

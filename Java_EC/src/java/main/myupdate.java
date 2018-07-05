@@ -31,33 +31,30 @@ public class myupdate extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        //表示ページはUTF8エンコード
+        response.setContentType("text/html;charset=UTF-8");
+        
         PrintWriter out = response.getWriter();
+        
         //セッションスタート
         HttpSession s = request.getSession();
         
-        response.setContentType("text/html;charset=UTF-8");
         try {
             
             //リクエストパラメータの文字コードをUTF-8に変更
             request.setCharacterEncoding("UTF-8");
 
             //アクセスルートチェック
-            if(s.getAttribute("userData") == null){
+            if(s.getAttribute("login") == null){
                 throw new Exception();
             }
             
-            //
-            UserDataDTO log = (UserDataDTO)s.getAttribute("userData");
-            System.out.print(log.getName());
-            //
-
             request.getRequestDispatcher("./Myupdate.jsp").forward(request, response);
             
-        }catch(Exception e){
-            //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
-            request.setAttribute("error", "不正なアクセスです");
-            System.out.print(e.getStackTrace());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        }catch(Exception ex){
+            request.setAttribute("error", "不正なアクセスです。TOPページから改めてログイン、もしくはユーザー登録してください。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
        } finally {
             out.close();
         }

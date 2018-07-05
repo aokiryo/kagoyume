@@ -9,7 +9,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -35,6 +37,7 @@ public class add extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         //セッションスタート
         HttpSession s = request.getSession();
 
@@ -43,52 +46,69 @@ public class add extends HttpServlet {
 
         //カートに加えられる商品
         ItemData id = (ItemData) s.getAttribute("id");
-
-        //非ログイン時の商品情報格納及びJSPへの受け渡し用
         ArrayList<ItemData> ids = new ArrayList<ItemData>();
+        
+        //商品情報を格納し、cartで表示したりbuy_tへ挿入したりする際に使用するMap
+        HashMap<Integer, ArrayList<ItemData>> cart = new HashMap<Integer, ArrayList<ItemData>>();
 
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            //文字はUTF-8でエンコード
-            request.setCharacterEncoding("UTF-8");
+
+        try {
 
             //ログインからの戻りか判断用
-            String access = request.getHeader("Referer");
+            String access = (String) s.getAttribute("URL");
 
-            //item経由かログインからの戻りでなければ弾く
-            if (s.getAttribute("id") == null && s.getAttribute("ids") == null) {
+            //item経由でなければ弾く
+            if (s.getAttribute("id") == null) {
                 throw new Exception();
             }
 
-            //非ログインならばidsセッションに商品情報格納
-            if (s.getAttribute("login") == null && s.getAttribute("ids") != null) {
-                ids = (ArrayList<ItemData>) s.getAttribute("ids");
-            }
-
-            //ログイン済みならセッションの商品情報をレコード→idsセッションに
-            if (access.equals("http://localhost:8080/Java_EC/login")) {
-            } else if (s.getAttribute("login") == null) {
-                ids.add(id);
-            } else if (s.getAttribute("login") != null) {
-                UserDataDAO dao = UserDataDAO.getInstance();
-                dao.insertCart(ud, id);
-                ArrayList<String> carts = dao.searchCart(ud.getUserID());
-                for (int i = 0; i < carts.size(); i++) {
-                    ItemData item = new ItemData();
-                    JsonNode jn = dao.searchCodes(carts.get(i));
-                    item.setName(jn.get("ResultSet").get("0").get("Result").get("0").get("Name").asText());
-                    item.setId(jn.get("ResultSet").get("0").get("Result").get("0").get("Code").asText());
-                    item.setPrice(jn.get("ResultSet").get("0").get("Result").get("0").get("Price").get("_value").asInt());
-                    URL image = new URL(jn.get("ResultSet").get("0").get("Result").get("0").get("ExImage").get("Url").asText());
-                    item.setImage(image);
-                    ids.add(item);
+            //非ログインかつ
+            if (s.getAttribute("login") == null) {
+                if (s.getAttribute("cart") != null) {
+                    //カートに入れた商品がある場合
+                    cart = (HashMap) s.getAttribute("cart");
+                    cart.get(null).add(id);
+                    cart.put(null, ids);
+                } else {
+                    //カートに入れた商品がない場合
+                    ids.add(id);
+                    cart.put(null, ids);
+                }
+            } else {
+                //ログイン済みかつ
+                if (access.equals("http://localhost:8080/Java_EC/add")) {
+                    //ログインページからの戻りの場合
+                    cart = (HashMap) s.getAttribute("cart");
+                } else {
+                    //そうでない場合
+                    UserDataDAO dao = UserDataDAO.getInstance();
+                    dao.insertCart(ud, id);
+                    ArrayList<String> carts = dao.searchCart(ud.getUserID());
+                    for (int i = 0; i < carts.size(); i++) {
+                        ItemData item = new ItemData();
+                        JsonNode jn = dao.searchCodes(carts.get(i));
+                        item.setName(jn.get("ResultSet").get("0").get("Result").get("0").get("Name").asText());
+                        item.setId(jn.get("ResultSet").get("0").get("Result").get("0").get("Code").asText());
+                        item.setPrice(jn.get("ResultSet").get("0").get("Result").get("0").get("Price").get("_value").asInt());
+                        URL image = new URL(jn.get("ResultSet").get("0").get("Result").get("0").get("ExImage").get("Url").asText());
+                        item.setImage(image);
+                        ids.add(item);
+                        cart.put(ud.getUserID(), ids);
+                    }
                 }
             }
 
-            s.setAttribute("ids", ids);
+            s.setAttribute("URL", "http://localhost:8080/Java_EC/add");
+            s.setAttribute("cart", cart);
             request.getRequestDispatcher("./Add.jsp").forward(request, response);
 
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
+            request.setAttribute("error", "データベースとの接続エラーです。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
+        }catch (Exception ex) {
             request.setAttribute("error", "不正なアクセスです。TOPページから改めてログインしてください。");
             System.out.print(ex.getStackTrace());
             request.getRequestDispatcher("./Error.jsp").forward(request, response);

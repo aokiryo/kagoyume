@@ -11,6 +11,7 @@
     ArrayList<String> chkList = ud.chkproperties();
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -41,29 +42,21 @@
                 if (val.equals("name")) {
                     output += "名前";
                 }
-                if (val.equals("year")) {
-                    output += "年";
+                if (val.equals("password")) {
+                    output += "パスワード";
                 }
-                if (val.equals("month")) {
-                    output += "月";
+                if (val.equals("mail")) {
+                    output += "メールアドレス";
                 }
-                if (val.equals("day")) {
-                    output += "日";
-                }
-                if (val.equals("type")) {
-                    output += "種別";
-                }
-                if (val.equals("tell")) {
-                    output += "電話番号";
-                }
-                if (val.equals("comment")) {
-                    output += "自己紹介";
+                if (val.equals("address")) {
+                    output += "住所";
                 }
                 output += "が未記入です<br>";
             }
         %>
         <%= output%>
         <% }%>
+        <a href="./Top.jsp">トップへ</a><br>
         </form>
     </body>
 </html>

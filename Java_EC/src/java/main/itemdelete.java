@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -39,25 +40,35 @@ public class itemdelete extends HttpServlet {
         //セッションスタート
         HttpSession s = request.getSession();
 
-        try (PrintWriter out = response.getWriter()) {
-            ArrayList<ItemData> ids = (ArrayList<ItemData>) s.getAttribute("ids");
+        //ユーザー情報
+        UserDataDTO ud = (UserDataDTO) s.getAttribute("login");
 
+        //カートの中の商品
+        HashMap cart = (HashMap) s.getAttribute("cart");
+        ArrayList<ItemData> ids = (ArrayList<ItemData>) cart.get(ud.getUserID());
+
+        try {
+            
+            //ログインしているユーザーのlistからコードが一致する商品を削除
             for (int i = 0; i < ids.size(); i++) {
                 if (ids.get(i).getId().equals(request.getParameter("itemcode"))) {
-                    ids.remove(i);
                     UserDataDAO.getInstance().cartItemDelete(ids.get(i).getId());
+                    ids.remove(i);
+                    cart.put(ud.getUserID(), ids);
                     break;
                 }
             }
 
-            s.setAttribute("ids", ids);
+            s.setAttribute("cart", cart);
 
             //戻す
-            String access = request.getHeader("Referer");
+            String access = (String) s.getAttribute("URL");
             response.sendRedirect(access);
 
         } catch (SQLException ex) {
-            Logger.getLogger(itemdelete.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("error", "データベースとの接続エラーです。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 

@@ -6,9 +6,10 @@
 <%@page import="main.UserDataDTO"%>
 <%
     HttpSession s = request.getSession();
-    UserDataDTO dto = (UserDataDTO) s.getAttribute("userData");
+    UserDataDTO dto = (UserDataDTO) s.getAttribute("login");
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,7 +22,7 @@
         パスワード:<%= dto.getPassword()%><br>
         メールアドレス:<%= dto.getMail()%><br>
         住所:<%= dto.getAddress()%><br>
-        総購入金額:<%= dto.getTotal()%><br>
+        総購入金額:<%= dto.getTotal()%>円<br>
         最終更新日時:<%= dto.getNewDate()%><br><br>
         <a href="myhistory">購入履歴</a><br>        
         <a href="myupdate">登録情報更新</a><br>

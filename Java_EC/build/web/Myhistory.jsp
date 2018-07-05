@@ -8,10 +8,9 @@
 <%
     HttpSession s = request.getSession();
     ArrayList<ItemData> results = (ArrayList<ItemData>) s.getAttribute("history");
-    ItemData id = null;
 %>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,7 +24,8 @@
                 <%= results.get(i).getName()%>
                 <%}%>
         </ol>
-        <a href="./Top.jsp">トップへ</a><br>
+        <a href="./Top.jsp">トップ(検索)</a><br>
         <a href="login">ログアウト</a><br>
+        <a href="mydata">マイデータ</a><br>
     </body>
 </html>

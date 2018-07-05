@@ -8,10 +8,9 @@
 <%
     HttpSession s = request.getSession();
     ItemData id = (ItemData) s.getAttribute("id");
-
 %>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,6 +26,7 @@
         商品概要:<%= id.getAbout()%><br>
         評価:<%= id.getRate()%>/5<br>
         <%--ログイン共通部--%>
+        <a href="./Top.jsp">トップ(検索)</a><br>
         <%if (s.getAttribute("login") != null) {%>
         <a href="login">ログアウト</a><br>
         <a href="cart">カート</a><br>

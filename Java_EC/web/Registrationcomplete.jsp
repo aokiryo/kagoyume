@@ -8,6 +8,7 @@
     UserData ud = (UserData) request.getAttribute("ud");
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,6 +22,6 @@
         メールアドレス:<%= ud.getMail()%><br>
         住所:<%= ud.getAddress()%><br>
         以上の内容で登録しました。<br>
-        <a href="./Top.jsp">トップへ戻る</a>
+        <a href="./Top.jsp">トップへ</a>
     </body>
 </html>

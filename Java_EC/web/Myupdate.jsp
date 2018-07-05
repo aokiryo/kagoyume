@@ -6,9 +6,10 @@
 <%@page import="main.UserDataDTO"%>
 <%
     HttpSession s = request.getSession();
-    UserDataDTO ud = (UserDataDTO) s.getAttribute("userData");
+    UserDataDTO ud = (UserDataDTO) s.getAttribute("login");
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>

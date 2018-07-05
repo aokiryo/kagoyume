@@ -34,35 +34,56 @@ public class buycomplete extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         //セッションスタート
         HttpSession s = request.getSession();
         
+        //ユーザー情報
         UserDataDTO ud = (UserDataDTO) s.getAttribute("login");
+        
+        //商品情報
         ArrayList<ItemData> ids = (ArrayList<ItemData>) s.getAttribute("ids");
         int type = Integer.parseInt(request.getParameter("type"));
         int sum = Integer.parseInt(request.getParameter("sum"));
         
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        
+        try {
+            
             //文字はUTF-8でエンコード
             request.setCharacterEncoding("UTF-8");
             
             UserDataDAO dao = UserDataDAO.getInstance();
             
+            //buyテーブルに商品情報追加
             dao.buyItems(ud, ids, type);
             
+            //カートの中身を消去（実際にはdeleteフラグをいじるだけ）
             dao.clearCart(ud);
             
+            //商品の合計値を記録
             sum += dao.getSum(ud);
-            
             dao.recordSum(ud, sum);
             
+            //総購入金額をログインしているユーザー情報に上書き
+            dao.search(ud);
+            s.setAttribute("login", ud);
+            
+            //商品情報を保持していたセッションを開放
             s.removeAttribute("ids");
+            s.removeAttribute("cart");
             
             request.getRequestDispatcher("./Buycomplete.jsp").forward(request, response);
             
         } catch (SQLException ex) {
-            Logger.getLogger(buycomplete.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("error", "データベースとの接続エラーです。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
+        } catch (Exception ex) {
+            request.setAttribute("error", "不正なアクセスです。TOPページから改めてログインしてください。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 

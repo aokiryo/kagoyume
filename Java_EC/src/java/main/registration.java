@@ -30,12 +30,25 @@ public class registration extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+
+        //セッションスタート
+        HttpSession s = request.getSession();
         try (PrintWriter out = response.getWriter()) {
-        HttpSession session = request.getSession();
-        session.setAttribute("ac", (int) (Math.random() * 1000));
-        request.getRequestDispatcher("./Registration.jsp").forward(request, response);   
-            
+
+            //アクセスチェック用
+            s.setAttribute("ac", (int) (Math.random() * 1000));
+
+            //cart→login→新規登録の順で来た場合にはカートのセッションの中身をリセット
+            String url = (String) s.getAttribute("URL");
+            if (url.equals("http://localhost:8080/Java_EC/cart")) {
+                s.removeAttribute("ids");
+            }
+
+            request.getRequestDispatcher("./Registration.jsp").forward(request, response);
+
         }
     }
 

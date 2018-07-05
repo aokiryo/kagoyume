@@ -6,10 +6,10 @@
 <%@page import="main.UserDataDTO"%>
 <%
     HttpSession s = request.getSession();
-    UserDataDTO dto = (UserDataDTO) s.getAttribute("userData");
+    UserDataDTO dto = (UserDataDTO) s.getAttribute("login");
 %>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,6 +26,6 @@
         最終更新日時:<%= dto.getNewDate()%><br><br>
         <h1>本当に削除してもよろしいですか？</h1><br>
         <a href="mydeleteresult">はい</a><br>
-        <a href="./Top.jsp">いいえ（トップへ）</a><br>
+        <a href="./Top.jsp">いいえ(トップへ)</a><br>
     </body>
 </html>

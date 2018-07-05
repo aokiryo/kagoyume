@@ -9,11 +9,9 @@
 <%
     HttpSession s = request.getSession();
     ArrayList<ItemData> results = (ArrayList<ItemData>) s.getAttribute("results");
-    ItemData id = null;
-
 %>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,7 +19,7 @@
         <title>search</title>
     </head>
     <body>
-        検索ワード:<%= s.getAttribute("searchWord")%><br>
+        検索ワード:<%= (String)s.getAttribute("searchWord")%><br>
         検索結果:<%= s.getAttribute("searchItems")%>件<br>
         <ol>
             <%for (int i = 0; i < results.size(); i++) {%>
@@ -31,7 +29,7 @@
                 <%}%>
         </ol>
         <%--ログイン共通部--%>
-        <a href="./Top.jsp">トップへ</a><br>
+        <a href="./Top.jsp">トップ(検索)</a><br>
         <%if (s.getAttribute("login") != null) {%>
         <a href="login">ログアウト</a><br>
         <a href="cart">カート</a><br>

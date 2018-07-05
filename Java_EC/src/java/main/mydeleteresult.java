@@ -32,11 +32,11 @@ public class mydeleteresult extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         //セッションスタート
         HttpSession s = request.getSession();
         
-        response.setContentType("text/html;charset=UTF-8");
         try {
             UserDataDTO deleteData = (UserDataDTO)s.getAttribute("login");
             
@@ -51,12 +51,12 @@ public class mydeleteresult extends HttpServlet {
         } catch (SQLException ex) {
             request.setAttribute("error", "データベースとの接続エラーです");
             System.out.print(ex.getStackTrace());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         } catch (Exception ex) {
             //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
             request.setAttribute("error", "不正なアクセスです");
             System.out.print(ex.getStackTrace());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         } finally {
             out.close();
         }

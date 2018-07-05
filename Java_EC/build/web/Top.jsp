@@ -13,7 +13,6 @@
     }
 %>
 
-<%@page %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -35,6 +34,7 @@
             <input type="submit" name="btnSubmit" value="検索">
         </form>
         <%--ログイン部--%>
+        <%s.setAttribute("URL", "http://localhost:8080/Java_EC/Top.jsp");%>
         <%if (s.getAttribute("login") != null) {%>
         <a href="login">ログアウト</a><br>
         <a href="cart">カート</a><br>

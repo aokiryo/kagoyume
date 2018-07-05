@@ -18,8 +18,8 @@ public class UserData implements Serializable{
     private String password;
     private String mail;
     private String address;
-    private int total;
-    private int deleteFlg;
+//    private int total;
+//    private int deleteFlg;
     
     public UserData(){
         this.name = "";

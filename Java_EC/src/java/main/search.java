@@ -39,25 +39,38 @@ public class search extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //セッションスタート
 
+        //セッションスタート
         HttpSession s = request.getSession();
 
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+
         try (PrintWriter out = response.getWriter()) {
 
             //文字はUTF-8でエンコード
             request.setCharacterEncoding("UTF-8");
 
-            //無入力はエラー
-            if (request.getParameter("search").equals("")) {
-                throw new Exception();
+            String beforeEncodeWord = "";
+            String encodedResult = "";
+            String access = (String) s.getAttribute("URL");
+
+            //ログインからの戻りではない場合
+            if (!access.equals("http://localhost:8080/Java_EC/search")) {
+                //無入力はエラー
+                if (request.getParameter("search").equals("")) {
+                    throw new Exception();
+                }
+                //検索ワードをエンコードしてセッションに保存
+                beforeEncodeWord = request.getParameter("search");
+                s.setAttribute("searchWord", beforeEncodeWord);
+                //loginから戻ってきた時を想定してエンコードした検索ワードもセッションに
+                encodedResult = URLEncoder.encode(beforeEncodeWord, "UTF-8");
+                s.setAttribute("encodedResult", encodedResult);
             }
 
-            String encodedResult = URLEncoder.encode(request.getParameter("search"), "UTF-8");
-
             //検索対象
-            String search = encodedResult;
+            String search = (String) s.getAttribute("encodedResult");
 
             //検索はDAOのメソッドで、結果はJsonNode形式で保持
             JsonNode jn = UserDataDAO.getInstance().searchItems(search);
@@ -82,26 +95,18 @@ public class search extends HttpServlet {
                 id.setPrice(jn.get("ResultSet").get("0").get("Result").get(ji).get("Price").get("_value").asInt());
                 URL image = new URL(jn.get("ResultSet").get("0").get("Result").get(ji).get("ExImage").get("Url").asText());
                 id.setImage(image);
-//                id.setAbout(jn.get("ResultSet").get("0").get("Result").get(ji).get("Description").asText());
-//                id.setRate(jn.get("ResultSet").get("0").get("Result").get(ji).get("Review").get("Rate").asDouble());
                 results.add(id);
-//                out.println(id.getName());
-//                out.println(id.getPrice());
-//                out.println(id.getImage());
-//                out.println(id.getAbout());
-//                out.println(id.getRate());
             }
 
+            s.setAttribute("URL", "http://localhost:8080/Java_EC/search");
             s.setAttribute("results", results);
-            s.setAttribute("searchWord", request.getParameter("search"));
             s.setAttribute("searchItems", jn.get("ResultSet").get("totalResultsAvailable"));
             request.getRequestDispatcher("./Search.jsp").forward(request, response);
 
-//            out.println(jn.get("ResultSet").get("0").get("Result").get("0").get("Name").asText());
-//            out.println(jn.get("ResultSet").get("0").get("Result").get("0").get("Image").get("Small"));
-//            out.println(jn.get("ResultSet").get("0").get("Result").get("0").get("Price").get("_value"));
         } catch (Exception ex) {
-            Logger.getLogger(search.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("error", "検索単語が入力されていません。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 

@@ -8,6 +8,8 @@ package main;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,35 +33,42 @@ public class login extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+        
         //セッションスタート
         HttpSession s = request.getSession();
 
         //jspで表示内容を変更するためのフラグ
         boolean logoutFlag = false;
 
-        try (PrintWriter out = response.getWriter()) {
+        try {
 
             //loginセッションの有無によって処理を変える
             if (s.getAttribute("login") != null) {
                 s.removeAttribute("login");
+                s.removeAttribute("cart");
+                s.removeAttribute("id");
+                s.removeAttribute("ids");
                 logoutFlag = true;
             }
 
             //アクセス元を控えておく
             String access = "";
-            if (s.getAttribute("cartlogin") != null) {
-                access = "http://localhost:8080/Java_EC/cart";
-            } else {
-                access = request.getHeader("Referer");
+            if(s.getAttribute("URL") == null){
+                throw new Exception();
             }
+            access = (String)s.getAttribute("URL");
             
             request.setAttribute("logoutFlag", logoutFlag);
             request.setAttribute("access", access);
             request.getRequestDispatcher("./Login.jsp").forward(request, response);
 
-        } catch (ServletException e) {
-            System.out.print(e.getRootCause());
+        } catch (Exception ex) {
+            request.setAttribute("error", "不正なアクセスです。TOPページから改めてログイン、もしくはユーザー登録してください。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 

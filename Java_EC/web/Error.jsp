@@ -9,9 +9,15 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Error</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        エラーが発生しました。以下の項目を確認してください。<br><br>
+        <% if(request.getAttribute("error") != null){%>
+        <%= request.getAttribute("error")%>
+        <%}else{%>
+        不正なアクセスです。
+        <%}%><br><br>
+        <a href="./Top.jsp">トップ(検索)</a><br>
     </body>
 </html>

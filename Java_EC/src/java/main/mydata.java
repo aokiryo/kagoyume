@@ -35,11 +35,12 @@ public class mydata extends HttpServlet {
         //セッションスタート
         HttpSession s = request.getSession();
         
+        //ユーザー情報
         UserDataDTO dto = (UserDataDTO)s.getAttribute("login");
         
-        UserDataDAO dao = UserDataDAO.getInstance();
-        
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+        
         try (PrintWriter out = response.getWriter()) {
             
             //リクエストパラメータの文字コードをUTF-8に変更
@@ -50,12 +51,12 @@ public class mydata extends HttpServlet {
                 throw new Exception();
             }
             
-            s.setAttribute("userData",dao.search(dto));
-            
             request.getRequestDispatcher("./Mydata.jsp").forward(request, response);
             
         } catch (Exception ex) {
-            Logger.getLogger(mydata.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("error", "不正なアクセスです。TOPページから改めてログイン、もしくはユーザー登録してください。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 

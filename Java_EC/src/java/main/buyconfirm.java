@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -39,57 +40,48 @@ public class buyconfirm extends HttpServlet {
         //セッションスタート
         HttpSession s = request.getSession();
 
-        ArrayList<ItemData> ids = null;
-
-        if (s.getAttribute("ids") != null) {
-            ids = (ArrayList<ItemData>) s.getAttribute("ids");
-        }
-        
+        //ユーザー情報
         UserDataDTO ud = (UserDataDTO) s.getAttribute("login");
 
-        ArrayList<ItemData> cart = (ArrayList<ItemData>) s.getAttribute("cart");
+        HashMap<Integer, ArrayList<ItemData>> cart = (HashMap<Integer, ArrayList<ItemData>>) s.getAttribute("cart");
+
+        //商品情報格納
+        ArrayList<ItemData> ids = null;
+        if (s.getAttribute("cart") != null) {
+            ids = cart.get(ud.getUserID());
+        }
+
+        //例外が発生した時の判別フラグ
+        int eFlag = 0;
+
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            //アクセスチェック
-            if (s.getAttribute("ids") == null || request.getParameter("accessCheck") == null) {
+
+        try {
+
+            //カートの中身が空の時の処理
+            if (ids == null || ids.isEmpty()) {
                 throw new Exception();
             }
-            
-//            if (s.getAttribute("cart") != null && !request.getHeader("Referer").equals("http://localhost:8080/Java_EC/itemdelete")) {
-//                if (s.getAttribute("login") == null) {
-//                    ids = cart;
-//                    s.removeAttribute("cart");
-//                } else {
-//                    UserDataDAO dao = UserDataDAO.getInstance();
-//                    ArrayList<String> searchResult = dao.searchHistory(ud.getUserID());
-//                    if (searchResult != null) {
-//                        for (int i = 0; i < searchResult.size(); i++) {
-//                            JsonNode jn = dao.searchCodes(searchResult.get(i));
-//                            ItemData id = null;
-//                            id.setName(jn.get("ResultSet").get("0").get("Result").get("0").get("Name").asText());
-//                            id.setId(jn.get("ResultSet").get("0").get("Result").get("0").get("Code").asText());
-//                            id.setPrice(jn.get("ResultSet").get("0").get("Result").get("0").get("Price").get("_value").asInt());
-//                            URL image = new URL(jn.get("ResultSet").get("0").get("Result").get("0").get("ExImage").get("Url").asText());
-//                            id.setImage(image);
-//                            ids.add(id);
-//                        }
-//                    }
-//                    for (int i = 0; i < cart.size(); i++) {
-//                        ids.add(cart.get(i));
-//                        System.out.print(ids.get(i));
-//                    }
-//                    s.removeAttribute("cart");
-//                }
-//            }
+
+            //アクセスチェック
+            if (!request.getParameter("accessCheck").equals("ok")) {
+                eFlag = 1;
+                throw new Exception();
+            }
 
             s.setAttribute("ids", ids);
 
             request.getRequestDispatcher("./Buyconfirm.jsp").forward(request, response);
 
-        } catch (SQLException ex) {
-            Logger.getLogger(buyconfirm.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            Logger.getLogger(buyconfirm.class.getName()).log(Level.SEVERE, null, ex);
+            if (eFlag == 0) {
+                request.setAttribute("error", "カートの中身が空です。実際に買うわけではないので、好きなだけ商品をカートに入れましょう。");
+            } else {
+                request.setAttribute("error", "不正なアクセスです。");
+            }
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 

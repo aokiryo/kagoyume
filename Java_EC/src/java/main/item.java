@@ -37,44 +37,46 @@ public class item extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         //セッションスタート
         HttpSession s = request.getSession();
 
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+
         try (PrintWriter out = response.getWriter()) {
+
             //文字はUTF-8でエンコード
             request.setCharacterEncoding("UTF-8");
 
-            String encodedResult = URLEncoder.encode(request.getParameter("itemcode"), "UTF-8");
+            String encodedCode = "";
+            String access = (String) s.getAttribute("URL");
 
+            //ログインからの戻りではない場合
+            if (!access.equals("http://localhost:8080/Java_EC/item")) {
+                //検索コードをエンコード
+                encodedCode = URLEncoder.encode(request.getParameter("itemcode"), "UTF-8");
+                //loginから戻ってきた時を想定して検索コードはセッションに
+                s.setAttribute("encodedCode", encodedCode);
+            }
+            
             //検索対象
-            String search = encodedResult;
+            String search = (String)s.getAttribute("encodedCode");
 
+            //選択された商品の詳細を商品コード検索で取得
             JsonNode jn = UserDataDAO.getInstance().searchCodes(search);
+            ItemData id = new ItemData();
+            id.setName(jn.get("ResultSet").get("0").get("Result").get("0").get("Name").asText());
+            id.setId(jn.get("ResultSet").get("0").get("Result").get("0").get("Code").asText());
+            id.setPrice(jn.get("ResultSet").get("0").get("Result").get("0").get("Price").get("_value").asInt());
+            URL image = new URL(jn.get("ResultSet").get("0").get("Result").get("0").get("ExImage").get("Url").asText());
+            id.setImage(image);
+            id.setAbout(jn.get("ResultSet").get("0").get("Result").get("0").get("Description").asText());
+            id.setRate(jn.get("ResultSet").get("0").get("Result").get("0").get("Review").get("Rate").asDouble());
 
-            //検索結果をBeansに格納
-//            ArrayList<ItemData> results = new ArrayList<ItemData>();
-//            for (int i = 0; i < 10; i++) {
-//            out.print(jn);
-                ItemData id = new ItemData();
-//                String ji = String.valueOf(i);
-                id.setName(jn.get("ResultSet").get("0").get("Result").get("0").get("Name").asText());
-                id.setId(jn.get("ResultSet").get("0").get("Result").get("0").get("Code").asText());
-                id.setPrice(jn.get("ResultSet").get("0").get("Result").get("0").get("Price").get("_value").asInt());
-                URL image = new URL(jn.get("ResultSet").get("0").get("Result").get("0").get("ExImage").get("Url").asText());
-                id.setImage(image);
-                id.setAbout(jn.get("ResultSet").get("0").get("Result").get("0").get("Description").asText());
-                id.setRate(jn.get("ResultSet").get("0").get("Result").get("0").get("Review").get("Rate").asDouble());
-//                out.println(id.getName());
-//                out.println(id.getPrice());
-//                out.println(id.getImage());
-//                out.println(id.getAbout());
-//                out.println(id.getRate());
-//            }
-
+            s.setAttribute("URL", "http://localhost:8080/Java_EC/item");            
             s.setAttribute("id", id);
-//            s.setAttribute("searchWord", request.getParameter("search"));
-//            s.setAttribute("searchItems", jn.get("ResultSet").get("totalResultsAvailable"));
+            
             request.getRequestDispatcher("./Item.jsp").forward(request, response);
         }
     }

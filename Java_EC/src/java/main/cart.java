@@ -8,6 +8,9 @@ package main;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,25 +37,29 @@ public class cart extends HttpServlet {
         //セッションスタート
         HttpSession s = request.getSession();
 
-        ArrayList<ItemData> ids = null;
-
-        ids = (ArrayList<ItemData>) s.getAttribute("ids");
-
+//        //商品情報格納用(ログイン)
+//        HashMap<Integer, ArrayList<ItemData>> cart = null;
+//        if (s.getAttribute("cart") != null) {
+//            cart = (HashMap<Integer, ArrayList<ItemData>>) s.getAttribute("cart");
+//        }
+        
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+
         try (PrintWriter out = response.getWriter()) {
+
             //文字はUTF-8でエンコード
             request.setCharacterEncoding("UTF-8");
 
+            s.setAttribute("URL", "http://localhost:8080/Java_EC/cart");
+
             if (s.getAttribute("login") == null) {
                 s.setAttribute("cartlogin", true);
-                request.getRequestDispatcher("login").forward(request, response);
+                response.sendRedirect("http://localhost:8080/Java_EC/login");
+            } else {
+                request.getRequestDispatcher("./Cart.jsp").forward(request, response);
             }
-
-            s.setAttribute("ids", ids);
-
-            request.getRequestDispatcher("./Cart.jsp").forward(request, response);
-
-        }
+        } 
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

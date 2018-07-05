@@ -5,11 +5,10 @@
 --%>
 <%
     HttpSession s = request.getSession();
-                System.out.print(request.getAttribute("access"));
-                System.out.print(request.getAttribute("logoutFlag"));
-
+    System.out.print(request.getAttribute("logoutFlag"));
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="Error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>

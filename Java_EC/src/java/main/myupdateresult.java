@@ -35,9 +35,15 @@ public class myupdateresult extends HttpServlet {
         //セッションスタート
         HttpSession s = request.getSession();
         
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+        
         try (PrintWriter out = response.getWriter()) {
             
+            //リクエストパラメータの文字コードをUTF-8に変更
+            request.setCharacterEncoding("UTF-8");
+            
+            //アクセスルートチェック
             if(s.getAttribute("login") == null){
                 throw new Exception();
             }
@@ -53,24 +59,26 @@ public class myupdateresult extends HttpServlet {
             UserDataDTO userdata = new UserDataDTO();
             ud.UD2DTOMapping(userdata);
 
-            //更新するレコードのuserIDを指定
+            //更新するレコードのuserIDと現在の総購入金額を記録
             UserDataDTO login = (UserDataDTO) s.getAttribute("login");
             userdata.setUserID(login.getUserID());
+            userdata.setTotal(login.getTotal());
 
-            //DBへデータの挿入
+            //DBのデータ更新
             UserDataDAO.getInstance().update(userdata);
+            
+            //再度取得
+            UserDataDAO.getInstance().search(ud,login);            
 
-            //結果画面での表示用に入力パラメータ―をリクエストパラメータとして保持
-            request.setAttribute("ud", ud);
-
-            //詳細画面に戻った時のためセッションにも保存
+            //詳細画面に戻った時のためセッションに保存
             s.setAttribute("login", login);
             
             request.getRequestDispatcher("./Myupdateresult.jsp").forward(request, response);
             
-            
         } catch (Exception ex) {
-            Logger.getLogger(myupdateresult.class.getName()).log(Level.SEVERE, null, ex);
+            request.setAttribute("error", "不正なアクセスです。TOPページから改めてログイン、もしくはユーザー登録してください。");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 

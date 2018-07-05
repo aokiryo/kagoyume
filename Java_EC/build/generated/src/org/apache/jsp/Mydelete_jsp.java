@@ -5,7 +5,7 @@ import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import main.UserDataDTO;
 
-public final class Top_jsp extends org.apache.jasper.runtime.HttpJspBase
+public final class Mydelete_jsp extends org.apache.jasper.runtime.HttpJspBase
     implements org.apache.jasper.runtime.JspSourceDependent {
 
   private static final JspFactory _jspxFactory = JspFactory.getDefaultFactory();
@@ -42,15 +42,11 @@ public final class Top_jsp extends org.apache.jasper.runtime.HttpJspBase
       _jspx_out = out;
       _jspx_resourceInjector = (org.glassfish.jsp.api.ResourceInjector) application.getAttribute("com.sun.appserv.jsp.resource.injector");
 
-      out.write("\n");
-      out.write("\n");
-      out.write("\n");
+      out.write('\n');
+      out.write('\n');
 
     HttpSession s = request.getSession();
-    UserDataDTO login = null;
-    if (s.getAttribute("login") != null) {
-        login = (UserDataDTO) s.getAttribute("login");
-    }
+    UserDataDTO dto = (UserDataDTO) s.getAttribute("userData");
 
       out.write("\n");
       out.write("\n");
@@ -59,45 +55,31 @@ public final class Top_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("<html>\n");
       out.write("    <head>\n");
       out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
-      out.write("        <title>top page</title>\n");
+      out.write("        <title>Mydelete</title>\n");
       out.write("    </head>\n");
       out.write("    <body>\n");
-      out.write("        <h1>かごゆめTOP</h1><br>\n");
-      out.write("        <h3>このサイトはYahooショッピングで\n");
-      out.write("            好きなだけ買い物した気分になれるサイトです</h3><br><br>\n");
-      out.write("\n");
-      out.write("        ");
-if (s.getAttribute("login") != null) {
-      out.write("\n");
-      out.write("        ようこそ");
-      out.print( login.getName());
-      out.write("さん<br><br>\n");
-      out.write("        ");
-}
-      out.write("\n");
-      out.write("\n");
-      out.write("        <form action=\"search\" method=\"get\">\n");
-      out.write("            商品検索 : <input type=\"text\" name=\"search\">\n");
-      out.write("            <input type=\"submit\" name=\"btnSubmit\" value=\"検索\">\n");
-      out.write("        </form>\n");
-      out.write("        ");
-      out.write("\n");
-      out.write("        ");
-s.setAttribute("URL", "http://localhost:8080/Java_EC/Top.jsp");
-      out.write("\n");
-      out.write("        ");
-if (s.getAttribute("login") != null) {
-      out.write("\n");
-      out.write("        <a href=\"login\">ログアウト</a><br>\n");
-      out.write("        <a href=\"cart\">カート</a><br>\n");
-      out.write("        <a href=\"mydata\">マイデータ</a><br>\n");
-      out.write("        ");
-} else {
-      out.write("\n");
-      out.write("        <a href=\"login\">ログイン</a><br>\n");
-      out.write("        ");
-}
-      out.write("\n");
+      out.write("        <h1>あなたの登録情報です</h1><br>\n");
+      out.write("        名前:");
+      out.print( dto.getName());
+      out.write("<br>\n");
+      out.write("        パスワード:");
+      out.print( dto.getPassword());
+      out.write("<br>\n");
+      out.write("        メールアドレス:");
+      out.print( dto.getMail());
+      out.write("<br>\n");
+      out.write("        住所:");
+      out.print( dto.getAddress());
+      out.write("<br>\n");
+      out.write("        総購入金額:");
+      out.print( dto.getTotal());
+      out.write("<br>\n");
+      out.write("        最終更新日時:");
+      out.print( dto.getNewDate());
+      out.write("<br><br>\n");
+      out.write("        <h1>本当に削除してもよろしいですか？</h1><br>\n");
+      out.write("        <a href=\"mydeleteresult\">はい</a><br>\n");
+      out.write("        <a href=\"./Top.jsp\">いいえ（トップへ）</a><br>\n");
       out.write("    </body>\n");
       out.write("</html>\n");
     } catch (Throwable t) {

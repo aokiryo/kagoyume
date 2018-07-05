@@ -32,9 +32,12 @@ public class registrationconfirm extends HttpServlet {
             throws ServletException, IOException {
         //セッションスタート
         HttpSession s = request.getSession();
-
+        
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+        
         try (PrintWriter out = response.getWriter()) {
+            
             //文字はUTF-8でエンコード
             request.setCharacterEncoding("UTF-8");
 
@@ -56,9 +59,9 @@ public class registrationconfirm extends HttpServlet {
             System.out.println("Session updated!!");
 
             request.getRequestDispatcher("./Registrationconfirm.jsp").forward(request, response);
-        } catch (Exception e) {
-            request.setAttribute("error", "不正なアクセスです");
-            System.out.print(e.getStackTrace());
+        } catch (Exception ex) {
+            request.setAttribute("error", "不正なアクセスです。TOPページから改めてログイン、もしくはユーザー登録してください。");
+            System.out.print(ex.getStackTrace());
             request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
 

@@ -35,9 +35,13 @@ public class registrationcomplete extends HttpServlet {
         //セッションスタート
         HttpSession s = request.getSession();
         
+        //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
+        
         try (PrintWriter out = response.getWriter()) {
-            request.setCharacterEncoding("UTF-8");//リクエストパラメータの文字コードをUTF-8に変更
+            
+            //リクエストパラメータの文字コードをUTF-8に変更
+            request.setCharacterEncoding("UTF-8");
             
             //アクセスルートチェック
             String accesschk = request.getParameter("ac");
@@ -65,12 +69,12 @@ public class registrationcomplete extends HttpServlet {
             //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
             request.setAttribute("error", "データベースとの接続エラーです");
             System.out.print(e.getStackTrace());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }catch(Exception e){
             //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
             request.setAttribute("error", "不正なアクセスです");
             System.out.print(e.getStackTrace());
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("./Error.jsp").forward(request, response);
         }
     }
 
