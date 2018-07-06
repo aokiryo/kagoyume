@@ -46,7 +46,7 @@ public class search extends HttpServlet {
         //表示ページはUTF8エンコード
         response.setContentType("text/html;charset=UTF-8");
 
-        try (PrintWriter out = response.getWriter()) {
+        try {
 
             //文字はUTF-8でエンコード
             request.setCharacterEncoding("UTF-8");
