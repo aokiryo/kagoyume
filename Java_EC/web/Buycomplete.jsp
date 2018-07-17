@@ -9,12 +9,20 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>Buycomplete</title>
     </head>
     <body>
-        購入が完了しました。<br>
-        <a href="./Top.jsp">トップ(検索)</a><br>
-        <%--ログイン共通部--%>
-        <a href="login">ログアウト</a><br>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+            <ul id="nav">
+                <li class="nav"><a href="login">ログアウト</a></li>
+                <li class="nav"><a href="mydata">マイデータ</a></li>
+            </ul>
+        </header>
+
+        <p>購入が完了しました。</p>
+
     </body>
 </html>

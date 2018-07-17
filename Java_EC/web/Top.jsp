@@ -18,29 +18,33 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>top page</title>
     </head>
     <body>
-        <h1>かごゆめTOP</h1><br>
-        <h3>このサイトはYahooショッピングで
-            好きなだけ買い物した気分になれるサイトです</h3><br><br>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+                <ul id="nav">
+                    <%s.setAttribute("UfRL", "http://localhost:8080/Java_EC/Top.jsp");%>
+                    <%if (s.getAttribute("login") != null) {%>
+                    <li class="nav">ようこそ<%= login.getName()%>さん</li>
+                    <li class="nav"><a href="login">ログアウト</a></li>
+                    <li class="nav"><a href="cart">カート</a></li>
+                    <li class="nav"><a href="mydata">マイデータ</a></li>
+                        <%} else {%>
+                    <li class="nav"><a href="login">ログイン</a></li>
+                        <%}%>
+                </ul>
+        </header>
 
-        <%if (s.getAttribute("login") != null) {%>
-        ようこそ<%= login.getName()%>さん<br><br>
-        <%}%>
+        <h1>『かごゆめ』はYahooショッピングで
+            好きなだけ買い物した気分になれるサイトです</h1><br>
 
-        <form action="search" method="get">
+        <form class="search" action="search" method="get">
             商品検索 : <input type="text" name="search">
             <input type="submit" name="btnSubmit" value="検索">
         </form>
-        <%--ログイン部--%>
         <%s.setAttribute("URL", "http://localhost:8080/Java_EC/Top.jsp");%>
-        <%if (s.getAttribute("login") != null) {%>
-        <a href="login">ログアウト</a><br>
-        <a href="cart">カート</a><br>
-        <a href="mydata">マイデータ</a><br>
-        <%} else {%>
-        <a href="login">ログイン</a><br>
-        <%}%>
     </body>
 </html>

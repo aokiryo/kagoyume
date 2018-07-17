@@ -9,10 +9,10 @@
 <%@page import="main.ItemData"%>
 <%
     HttpSession s = request.getSession();
-    UserDataDTO ud = (UserDataDTO)s.getAttribute("login");
+    UserDataDTO ud = (UserDataDTO) s.getAttribute("login");
     HashMap<Integer, ArrayList<ItemData>> cart = new HashMap<Integer, ArrayList<ItemData>>();
     ArrayList<ItemData> ids = new ArrayList<ItemData>();
-    if(s.getAttribute("cart") != null){
+    if (s.getAttribute("cart") != null) {
         cart = (HashMap<Integer, ArrayList<ItemData>>) s.getAttribute("cart");
         ids = cart.get(ud.getUserID());
     }
@@ -23,29 +23,40 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>Cart</title>
     </head>
     <body>
-        <form action="buyconfirm" method="POST">
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+            <ul id="nav">
+                <%if (s.getAttribute("login") != null) {%>
+                <li class="nav"><a href="login">ログアウト</a></li>
+                <li class="nav"><a href="mydata">マイデータ</a></li>
+                    <%} else {%>
+                    <li class="nav"><a href="login">ログイン</a></li>
+                        <%}%>
+            </ul>
+        </header>
+
+        <h4>カートから商品を削除したい場合は、削除したい商品の名前をクリックしてください。</h4>
+
+        <ol>
+            <%if (s.getAttribute("login") != null && !cart.isEmpty()) {%>
+            <%for (int i = 0; i < ids.size(); i++) {%>
+            <li id="cart">
+                <p><img src="<%= ids.get(i).getImage()%>" title="商品画像"></p>
+                <p><a href="itemdelete?itemcode=<%= ids.get(i).getId()%>"><%= ids.get(i).getName()%></a>:
+                <%= ids.get(i).getPrice()%>円</p>
+                <%}%>
+                <%}%>
+        </ol>
+
+        <form class="buy" action="buyconfirm" method="POST">
             <input type="hidden" name="accessCheck" value="ok">
             <input type="submit" name="btnSubmit" value="カートの商品を購入する">
         </form><br>
-        カートから商品を削除したい場合は、削除したい商品の名前をクリックしてください。
-        <ol>
-            <%if (s.getAttribute("login") != null && !cart.isEmpty()) {%>
-                <%for (int i = 0; i < ids.size(); i++) {%>
-                    <li><img src="<%= ids.get(i).getImage()%>" title="商品画像"><br>
-                    <a href="itemdelete?itemcode=<%= ids.get(i).getId()%>"><%= ids.get(i).getName()%></a>:
-                    <%= ids.get(i).getPrice()%>円
-                <%}%>
-            <%}%>
-        </ol>
-        <a href="./Top.jsp">トップ(検索)</a><br>
-        <%--ログイン共通部--%>
-        <%if (s.getAttribute("login") != null) {%>
-        <a href="login">ログアウト</a><br>
-        <%} else {%>
-        <a href="login">ログイン</a><br>
-        <%}%>
+
     </body>
 </html>

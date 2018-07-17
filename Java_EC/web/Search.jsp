@@ -16,25 +16,34 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>search</title>
     </head>
     <body>
-        検索ワード:<%= (String)s.getAttribute("searchWord")%><br>
-        検索結果:<%= s.getAttribute("searchItems")%>件<br>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+            <ul id="nav">
+                <li class="nav">検索ワード:<%= (String) s.getAttribute("searchWord")%></li>
+                <li class="nav">検索結果:<%= s.getAttribute("searchItems")%>件</li>
+                    <%if (s.getAttribute("login") != null) {%>
+                <li class="nav"><a href="login">ログアウト</a></li>
+                <li class="nav"><a href="cart">カート</a></li>
+                <li class="nav"><fa href="mydata">マイデータ</a></li>
+                    <%} else {%>
+                    <li class="nav"><a href="cart">カート</a></li>
+                    <li class="nav"><a href="login">ログイン</a></li>
+                        <%}%>
+            </ul>
+        </header>
+
         <ol>
             <%for (int i = 0; i < results.size(); i++) {%>
-            <li><img src="<%= results.get(i).getImage()%>" title="商品画像"><br>
-                <a href="item?itemcode=<%= results.get(i).getId()%>"><%= results.get(i).getName()%></a>:
-                <%= results.get(i).getPrice()%>円
-                <%}%>
+            <li id="search">
+                <p><img src="<%= results.get(i).getImage()%>" title="商品画像"></p>
+                <p><a href="item?itemcode=<%= results.get(i).getId()%>"><%= results.get(i).getName()%></a>:
+                    <%= results.get(i).getPrice()%>円</p>
+                    <%}%>
         </ol>
-        <%--ログイン共通部--%>
-        <a href="./Top.jsp">トップ(検索)</a><br>
-        <%if (s.getAttribute("login") != null) {%>
-        <a href="login">ログアウト</a><br>
-        <a href="cart">カート</a><br>
-        <%} else {%>
-        <a href="login">ログイン</a><br>
-        <%}%>
     </body>
 </html>

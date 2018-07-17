@@ -10,11 +10,17 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
+        <title>Mydeleteresult</title>
     </head>
     <body>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+        </header>
+        
         <h1>削除確認</h1>
-        削除しました。<br><br>
-        <a href="./Top.jsp">トップへ</a><br>
+        <h4>削除しました。</h4>
+        
     </body>
 </html>

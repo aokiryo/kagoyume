@@ -18,17 +18,24 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>Add</title>
     </head>
     <body>
-        商品をカートに追加しました<br>
-        <a href="./Top.jsp">トップ（検索）</a><br>
-        <a href="cart">カート</a><br>
-        <%--ログイン共通部--%>
-        <%if (s.getAttribute("login") != null) {%>
-        <a href="login">ログアウト</a><br>
-        <%} else {%>
-        <a href="login">ログイン</a><br>
-        <%}%>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+            <ul id="nav">
+                <%if (s.getAttribute("login") != null) {%>
+                <li class="nav"><a href="login">ログアウト</a></li>
+                <li class="nav"><a href="cart">カート</a></li>
+                <li class="nav"><a href="mydata">マイデータ</a></li>
+                    <%} else {%>
+                    <li class="nav"><a href="cart">カート</a></li>
+                    <li class="nav"><a href="login">ログイン</a></li>
+                        <%}%>
+            </ul>
+        </header>
+        <p>商品をカートに追加しました。</p>
     </body>
 </html>

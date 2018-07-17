@@ -14,20 +14,31 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>Mydata</title>
     </head>
     <body>
-        <h1>あなたの登録情報です</h1><br>
-        名前:<%= dto.getName()%><br>
-        パスワード:<%= dto.getPassword()%><br>
-        メールアドレス:<%= dto.getMail()%><br>
-        住所:<%= dto.getAddress()%><br>
-        総購入金額:<%= dto.getTotal()%>円<br>
-        最終更新日時:<%= dto.getNewDate()%><br><br>
-        <a href="myhistory">購入履歴</a><br>        
-        <a href="myupdate">登録情報更新</a><br>
-        <a href="mydelete">登録情報削除</a><br>        
-        <a href="login">ログアウト</a><br>
-        <a href="./Top.jsp">トップへ</a><br>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+            <ul id="nav">
+                <li class="nav"><a href="login">ログアウト</a></li>
+                <li class="nav"><a href="myhistory">購入履歴</a></li>
+                <li class="nav"><a href="myupdate">登録情報更新</a></li>
+                <li class="nav"><a href="mydelete">登録情報削除</a></li>
+            </ul>
+        </header>
+
+        <h1>あなたの登録情報です</h1>
+        
+        <div id="myData">
+            <p>名前:<%= dto.getName()%></p>
+            <p>パスワード:<%= dto.getPassword()%></p>
+            <p>メールアドレス:<%= dto.getMail()%></p>
+            <p>住所:<%= dto.getAddress()%></p>
+            <p>総購入金額:<%= dto.getTotal()%>円</p>
+            <p>最終更新日時:<%= dto.getNewDate()%></p>
+        </div>
+
     </body>
 </html>

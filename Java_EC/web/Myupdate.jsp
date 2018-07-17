@@ -14,28 +14,33 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>Myupdate</title>
     </head>
     <body>
-        <form action="myupdateresult" method="POST">
-            名前:
-            <input type="text" name="name" value="<%= ud.getName()%>">
-            <br><br>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+            <ul id="nav">
+                <li class="nav"><a href="login">ログアウト</a></li>
+                <li class="nav"><a href="mydata">マイデータ</a></li>
+            </ul>
+        </header>
 
-            パスワード:
-            <input type="text" name="password" value="<%= ud.getPassword()%>">
-            <br><br>
+        <form id="update" action="myupdateresult" method="POST">
+            <p>名前:
+                <input type="text" name="name" value="<%= ud.getName()%>"></p>
 
-            メールアドレス:
-            <input type="text" name="mail" value="<%= ud.getMail()%>">
-            <br><br>
+            <p>パスワード:
+                <input type="text" name="password" value="<%= ud.getPassword()%>"></p>
 
-            住所
-            <br>
-            <textarea name="address" rows=10 cols=50 style="resize:none" wrap="hard"><%= ud.getAddress()%></textarea><br><br>
+            <p>メールアドレス:
+                <input type="text" name="mail" value="<%= ud.getMail()%>"></p>
 
-            <input type="submit" name="btnSubmit" value="更新"><br>
-            <a href="./Top.jsp">トップへ</a><br>
-            </body>
+            <p>住所:
+                <textarea name="address" rows=10 cols=50 style="resize:none" wrap="hard"><%= ud.getAddress()%></textarea></p>
+
+            <p><input type="submit" name="btnSubmit" value="更新"></p>
         </form>
+    </body>
 </html>

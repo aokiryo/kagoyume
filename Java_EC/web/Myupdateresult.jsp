@@ -14,21 +14,32 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link href="./Css.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
         <title>Myupdateresult</title>
     </head>
     <body>
-        <h1>更新結果</h1><br>
-        名前:<%= dto.getName()%><br>
-        パスワード:<%= dto.getPassword()%><br>
-        メールアドレス:<%= dto.getMail()%><br>
-        住所:<%= dto.getAddress()%><br>
-        総購入金額:<%= dto.getTotal()%><br>
-        最終更新日時:<%= dto.getNewDate()%><br><br>
-        以上の内容で更新しました<br>
-        <a href="myhistory">購入履歴</a><br>        
-        <a href="myupdate">登録情報更新</a><br>
-        <a href="mydelete">登録情報削除</a><br>        
-        <a href="login">ログアウト</a><br>
-        <a href="./Top.jsp">トップへ</a><br>
+        <header>
+            <a class="bland" href="./Top.jsp">かごゆめ</a>
+            <ul id="nav">
+                <li class="nav"><a href="login">ログアウト</a></li>
+                <li class="nav"><a href="mydata">マイデータ</a></li>
+                <li class="nav"><a href="myhistory">購入履歴</a></li>
+                <li class="nav"><a href="myupdate">登録情報更新</a></li>
+                <li class="nav"><a href="mydelete">登録情報削除</a></li>
+            </ul>
+        </header>
+
+        <h1>更新結果</h1>
+        <div id="myUpdate">
+            <p>名前:<%= dto.getName()%></p>
+            <p>パスワード:<%= dto.getPassword()%></p>
+            <p>メールアドレス:<%= dto.getMail()%></p>
+            <p>住所:<%= dto.getAddress()%></p>
+            <p>総購入金額:<%= dto.getTotal()%></p>
+            <p>最終更新日時:<%= dto.getNewDate()%></p>
+        </div>
+        <h5>以上の内容で更新しました</h5>
+
     </body>
 </html>
